@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\canopy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\disturbance.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gday.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\initialise_model.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\litter_production.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\nrutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\odeint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\optimal_root_model.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\phenology.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\photosynthesis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\plant_growth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\radiation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\read_met_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\read_param_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\rkck.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\rkqs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\simple_moving_average.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\soils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utilities.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\water_balance.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\water_balance_sub_daily.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\write_output_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\zbrent.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\canopy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\disturbance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gday.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\initialise_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\litter_production.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\optimal_root_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\phenology.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\photosynthesis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\plant_growth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\radiation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\read_met_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\read_param_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rkck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rkqs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\simple_moving_average.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\soils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\structures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\water_balance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\water_balance_sub_daily.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\write_output_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zbrent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nrutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\odeint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
