@@ -144,17 +144,20 @@ int handler(char *section, char *name, char *value, control *c,
             exit(EXIT_FAILURE);
         }
     } else if (MATCH("control", "alloc_model")) {
-        if (strcmp(temp, "FIXED") == 0||
+        if (strcmp(temp, "FIXED") == 0 ||
             strcmp(temp, "fixed") == 0)
             c->alloc_model = FIXED;
         else if (strcmp(temp, "GRASSES") == 0 || strcmp(temp, "grasses") == 0)
             c->alloc_model = GRASSES;
         else if (strcmp(temp, "ALLOMETRIC") == 0 ||
-                 strcmp(temp, "allometric") == 0)
+            strcmp(temp, "allometric") == 0)
             c->alloc_model = ALLOMETRIC;
-		else if (strcmp(temp, "SGS") == 0 ||
-			strcmp(temp, "sgs") == 0)
-			c->alloc_model = SGS;
+        else if (strcmp(temp, "SGS") == 0 ||
+            strcmp(temp, "sgs") == 0)
+            c->alloc_model = SGS;
+        else if (strcmp(temp, "HUFKEN") == 0 ||
+            strcmp(temp, "hufken") == 0)
+            c->alloc_model = HUFKEN;
         else {
             fprintf(stderr, "Unknown alloc model: %s\n", temp);
             exit(EXIT_FAILURE);
@@ -661,6 +664,12 @@ int handler(char *section, char *name, char *value, control *c,
         p->faecesn = atof(value);
     } else if (MATCH("params", "fdecay")) {
         p->fdecay = atof(value);
+    }else if (MATCH("params", "q")) {
+        p->q = atof(value);
+    } else if (MATCH("params", "q_s")) {
+        p->q_s = atof(value);
+    }else if (MATCH("params", "use_cover")) {
+    p->use_cover = atof(value);
     } else if (MATCH("params", "fdecaydry")) {
         p->fdecaydry = atof(value);
     } else if (MATCH("params", "fhw")) {

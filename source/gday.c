@@ -341,8 +341,8 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
         s->lai = MAX(0.01, (p->sla * M2_AS_HA / KG_AS_TONNES /
                             p->cfracts * s->shoot));
     }
-
-    if (c->water_balance == HYDRAULICS) {
+    /*
+        if (c->water_balance == HYDRAULICS) {
         double root_zone_total, water_content;
 
         // Update the soil water storage
@@ -379,10 +379,11 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
         }
 
     } else {
-		//i think just use initial value will be fine; -jinyan Sep 2019
-        //s->pawater_root = p->wcapac_root;
-        //s->pawater_topsoil = p->wcapac_topsoil;
+        s->pawater_root = p->wcapac_root;
+        s->pawater_topsoil = p->wcapac_topsoil;
     }
+    */
+
 
     if (c->disturbance) {
         if ((disturbance_yrs = (int *)calloc(1, sizeof(int))) == NULL) {

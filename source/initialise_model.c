@@ -112,6 +112,9 @@ void initialise_params(params *p) {
     p->faecescn = 25.0;
     p->faecesn = 0.0;
     p->fdecay = 0.59988;
+    p->q = 0.59988;
+    p->q_s = 0.59988;
+    p->use_cover = 1;
     p->fdecaydry = 0.59988;
     p->fhw = 0.8;
     p->fix_lai = -999.9;

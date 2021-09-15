@@ -18,6 +18,7 @@
 #include "plant_growth.h"
 #include "water_balance.h"
 #include "zbrent.h"
+#include <math.h>
 
 
 
@@ -176,90 +177,39 @@ void calc_carbon_allocation_fracs(control* c, fluxes* f, fast_spinup* fs,
 		f->alstem -= f->alcroot;
 
 	}
-	else if (c->alloc_model == GRASSES) {
+    else if (c->alloc_model == GRASSES) {
+        /* First figure out root allocation given available water & nutrients
+              hyperbola shape to allocation */
+        f->alroot = (p->c_alloc_rmax * p->c_alloc_rmin /
+            (p->c_alloc_rmin + (p->c_alloc_rmax - p->c_alloc_rmin) *
+                s->prev_sma));
+        f->alleaf = 1.0 - f->alroot;
 
-		///* First figure out root allocation given available water & nutrients
-		//   hyperbola shape to allocation */
-		//f->alroot = (p->c_alloc_rmax * p->c_alloc_rmin /
-		//             (p->c_alloc_rmin + (p->c_alloc_rmax - p->c_alloc_rmin) *
-		//              s->prev_sma));
-		//f->alleaf = 1.0 - f->alroot;
+        /* Now adjust root & leaf allocation to maintain balance, accounting
+           for stress e.g. -> Sitch et al. 2003, GCB.
+         leaf-to-root ratio under non-stressed conditons
+        lr_max = 0.8;
+         Calculate adjustment on lr_max, based on current "stress"
+           calculated from running mean of N and water stress
+        stress = lr_max * s->prev_sma;
+        calculate new allocation fractions based on imbalance in *biomass*
+        mis_match = s->shoot / (s->root * stress);
+        if (mis_match > 1.0) {
+            reduce leaf allocation fraction
+            adj = f->alleaf / mis_match;
+            f->alleaf = MAX(p->c_alloc_fmin, MIN(p->c_alloc_fmax, adj));
+            f->alroot = 1.0 - f->alleaf;
+        } else {
+             reduce root allocation
+            adj = f->alroot * mis_match;
+            f->alroot = MAX(p->c_alloc_rmin, MIN(p->c_alloc_rmax, adj));
+            f->alleaf = 1.0 - f->alroot;
+        }*/
+        f->alstem = 0.0;
+        f->albranch = 0.0;
+        f->alcroot = 0.0;
 
-		//add new allocation based on water
-		//calculate past rainfall
-		ppt_sum_prev = 0.0;
-		pass_day = 0;
-		for (dd = c->day_idx;
-			(dd - pass_day) > 1 && pass_day < p->days_rain;
-			pass_day++) {
-
-			if (pass_day > 0) {
-				ppt_sum_prev += ma->rain[dd - pass_day];
-			}
-			else {
-				ppt_sum_prev = 0.0;
-			}
-		}
-
-		/*
-			if (s->wtfac_root > p->green_sw_frac) {
-				gLeaf = p->c_alloc_fmax;
-				gRoot = p->c_alloc_rmax;
-			}
-			else {
-				gLeaf = 0.0;
-				gRoot = 0.0;
-			}*/
-
-			//	a rough approximation of Hufkens model	
-		if (ppt_sum_prev > p->green_sw_frac) {
-			gLeaf = p->c_alloc_fmax;
-			gRoot = p->c_alloc_rmax;
-		}
-		else {
-			gLeaf = 0.0;
-			gRoot = 0.0;
-		}
-
-		// reduce growth when close to full cover; 
-		//here I used the apar function; 
-		//maybe better witha a s shape one
-		plant_cover = 1 - exp(-0.5 * s->lai);
-
-		f->alroot = gRoot * (1 - s->wtfac_root) ;
-		f->alleaf = gLeaf * s->wtfac_root * (1 - plant_cover);
-		ppt_sum_prev = 0.0;
-		pass_day = 0;
-		/* Now adjust root & leaf allocation to maintain balance, accounting
-		   for stress e.g. -> Sitch et al. 2003, GCB.
-
-		 leaf-to-root ratio under non-stressed conditons
-		lr_max = 0.8;
-
-		 Calculate adjustment on lr_max, based on current "stress"
-		   calculated from running mean of N and water stress
-		stress = lr_max * s->prev_sma;
-
-		calculate new allocation fractions based on imbalance in *biomass*
-		mis_match = s->shoot / (s->root * stress);
-
-
-		if (mis_match > 1.0) {
-			reduce leaf allocation fraction
-			adj = f->alleaf / mis_match;
-			f->alleaf = MAX(p->c_alloc_fmin, MIN(p->c_alloc_fmax, adj));
-			f->alroot = 1.0 - f->alleaf;
-		} else {
-			 reduce root allocation
-			adj = f->alroot * mis_match;
-			f->alroot = MAX(p->c_alloc_rmin, MIN(p->c_alloc_rmax, adj));
-			f->alleaf = 1.0 - f->alroot;
-		}*/
-		f->alstem = 0.0;
-		f->albranch = 0.0;
-		f->alcroot = 0.0;
-
-	}
+    }
 	else if (c->alloc_model == ALLOMETRIC) {
 
 		/* Calculate tree height: allometric reln using the power function
@@ -334,14 +284,17 @@ void calc_carbon_allocation_fracs(control* c, fluxes* f, fast_spinup* fs,
 	}
 	else if (c->alloc_model == SGS) {
 		//the SGS scheme
-		t_et = s->wtfac_root;//f->transpiration / (f->et * s->fipar);
+		t_et = s->wtfac_topsoil;//f->transpiration / (f->et * s->fipar);
 
 		if (t_et > 1) {
 			t_et = 1.0;
 		}
 		//printf("t-et: %f\n", t_et);
 		f->alleaf = t_et * p->c_alloc_fmax;
-		f->alroot = (p->c_alloc_rmax + p->c_alloc_fmax) - f->alleaf;
+        //this assume that plant can store c!
+        //however one need to make sure that froot and fleaf sum is less than 1
+		//f->alroot = (p->c_alloc_rmax + p->c_alloc_fmax) - f->alleaf;
+        f->alroot = p->c_alloc_rmax;
 	}
 	else if(c->alloc_model == FATICHI){
 	////calculate past rainfall
@@ -379,6 +332,96 @@ void calc_carbon_allocation_fracs(control* c, fluxes* f, fast_spinup* fs,
 	//f->albranch = 0.0;
 	//f->alcroot = 0.0;
 }
+    else if (c->alloc_model == HUFKEN) {
+
+    ///* First figure out root allocation given available water & nutrients
+    //   hyperbola shape to allocation */
+    //f->alroot = (p->c_alloc_rmax * p->c_alloc_rmin /
+    //             (p->c_alloc_rmin + (p->c_alloc_rmax - p->c_alloc_rmin) *
+    //              s->prev_sma));
+    //f->alleaf = 1.0 - f->alroot;
+
+    //add new allocation based on water
+    //calculate past rainfall
+
+    ppt_sum_prev = 0.0;
+    pass_day = 0;
+    for (dd = c->day_idx;
+        (dd - pass_day) > 1 && pass_day < p->days_rain;
+        pass_day++) {
+
+        if (pass_day > 0) {
+            ppt_sum_prev += ma->rain[dd - pass_day];
+        }
+        else {
+            ppt_sum_prev = 0.0;
+        }
+    }
+
+    /*
+        if (s->wtfac_root > p->green_sw_frac) {
+            gLeaf = p->c_alloc_fmax;
+            gRoot = p->c_alloc_rmax;
+        }
+        else {
+            gLeaf = 0.0;
+            gRoot = 0.0;
+        }
+*/
+//	a rough approximation of Hufkens model	
+    if (ppt_sum_prev > p->green_sw_frac) {
+        gLeaf = p->c_alloc_fmax;
+        gRoot = p->c_alloc_rmax;
+    }
+    else {
+        gLeaf = 0.0;
+        gRoot = 0.0;
+    }
+
+    // gLeaf = p->c_alloc_fmax;
+     //gRoot = p->c_alloc_rmax;
+ 
+
+    //f->alroot = gRoot * (1 - s->wtfac_topsoil);
+    f->alroot = p->c_alloc_rmax;
+    // reduce growth when close to full cover; 
+ //here I used the apar function; 
+ //maybe better witha a s shape one
+    plant_cover = (1 - exp(-0.5 * s->lai))*p->use_cover;
+    f->alleaf = gLeaf * pow(s->wtfac_topsoil, p->q) * (1 - plant_cover);
+
+    ppt_sum_prev = 0.0;
+    pass_day = 0;
+    /* Now adjust root & leaf allocation to maintain balance, accounting
+       for stress e.g. -> Sitch et al. 2003, GCB.
+
+     leaf-to-root ratio under non-stressed conditons
+    lr_max = 0.8;
+
+     Calculate adjustment on lr_max, based on current "stress"
+       calculated from running mean of N and water stress
+    stress = lr_max * s->prev_sma;
+
+    calculate new allocation fractions based on imbalance in *biomass*
+    mis_match = s->shoot / (s->root * stress);
+
+
+    if (mis_match > 1.0) {
+        reduce leaf allocation fraction
+        adj = f->alleaf / mis_match;
+        f->alleaf = MAX(p->c_alloc_fmin, MIN(p->c_alloc_fmax, adj));
+        f->alroot = 1.0 - f->alleaf;
+    } else {
+         reduce root allocation
+        adj = f->alroot * mis_match;
+        f->alroot = MAX(p->c_alloc_rmin, MIN(p->c_alloc_rmax, adj));
+        f->alleaf = 1.0 - f->alroot;
+    }*/
+    f->alstem = 0.0;
+    f->albranch = 0.0;
+    f->alcroot = 0.0;
+
+    }
 	else {
 		fprintf(stderr, "Unknown C allocation model: %d\n", c->alloc_model);
 		exit(EXIT_FAILURE);
@@ -417,8 +460,8 @@ void carbon_allocation(control* c, fluxes* f, params* p, state* s,
 	f->cpleaf = s->nsc * f->alleaf;
 	f->cproot = s->nsc * f->alroot;
 
-	s->nsc -= (f->cpleaf + f->cproot);
-	s->nsc *= 0.99;// assuming that 1% will lost via respiration
+	s->nsc += -(f->cpleaf + f->cproot);
+	//s->nsc *= 0.99;// assuming that 1% will lost via respiration
 
 	//double days_left;
 	//if (c->deciduous_model) {
@@ -506,14 +549,37 @@ void update_plant_state(control* c, fluxes* f, params* p, state* s,
 	** Carbon pools
 	*/
 
-	if (f->cpleaf > 0.0) {
+	/*
+     if (f->cpleaf > 0.0) {
 		s->shoot += f->cpleaf - f->ceaten;
 	}
 	else {
-		//s->shoot += -f->deadleaves - f->ceaten;
-		s->shoot -= p->fdecay * s->shoot - f->ceaten;
+		s->shoot += -f->deadleaves - f->ceaten;
 	}
-	
+    */
+
+    //account for now q_s conditions
+    /*
+    /double soil_water_impact;
+    double soil_water_deficit;
+
+        if (float_eq(p->q_s, 0.0)) {
+            soil_water_impact = 1.0;
+        }
+        else {
+            soil_water_deficit = (1 - s->wtfac_topsoil);
+            soil_water_impact = pow(soil_water_deficit, p->q_s);
+        }
+        */
+    
+    f->deadleaves = p->fdecay * s->shoot * pow((1 - s->wtfac_topsoil), p->q_s);
+
+    s->shoot += f->cpleaf - f->deadleaves - f->ceaten;
+
+    if (s->shoot < 0.0 ) {
+        s->shoot = 0.0;
+    }
+    //s->shoot -= p->fdecay * (1 - s->wtfac_topsoil) * s->shoot;
 	//s->shoot *= 0.5;
 	s->root += f->cproot - f->deadroots;
 	//s->root *= 0.5;
@@ -1015,8 +1081,8 @@ int nitrogen_allocation(control *c, fluxes *f, params *p, state *s,
             f->cpcroot = s->nsc * f->alcroot;
             f->cpbranch = s->nsc * f->albranch;
             f->cpstem = s->nsc * f->alstem;
-			s->nsc -= (f->cpleaf + f->cproot + f->cpcroot +
-				f->cpbranch + f->cpstem);
+			s->nsc += -(f->cpleaf - f->cproot - f->cpcroot -
+				f->cpbranch - f->cpstem);
 
             f->npbranch = f->npp * f->albranch * ncbnew;
             f->npstemimm = f->npp * f->alstem * ncwimm;

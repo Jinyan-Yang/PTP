@@ -44,7 +44,8 @@ void calculate_litterfall(control *c, fluxes *f, fast_spinup *fs,
     //else
         //f->deadleaves = *fdecay * s->shoot;
 	
-	f->deadleaves = (p->fdecay + 0.1) * s->shoot;
+	//f->deadleaves = (p->fdecay) * s->shoot;
+    f->deadleaves = p->fdecay* pow((1 - s->wtfac_topsoil), p->q_s)* s->shoot;
 
     if (c->spinup_method == SAS) {
         if (c->deciduous_model)

@@ -51,6 +51,7 @@
 #define ALLOMETRIC 2
 #define SGS 3
 #define FATICHI 4
+#define HUFKEN 5
 
 /* Ps pathway */
 #define C3 0

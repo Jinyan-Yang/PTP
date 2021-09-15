@@ -134,7 +134,6 @@ void calculate_water_balance(control *c, fluxes *f, met *m, params *p,
     f->gs_mol_m2_sec = gs_am + gs_pm;
     f->ga_mol_m2_sec = ga_am + ga_pm;
 
-
     /*
     ** NB. et, transpiration & soil evap may all be adjusted in
     ** update_water_storage if we don't have sufficient water
@@ -1295,11 +1294,23 @@ void calculate_soil_water_fac(control *c, params *p, state *s) {
         moisture_ratio_topsoil = s->pawater_topsoil / p->wcapac_topsoil;
         moisture_ratio_root = s->pawater_root / p->wcapac_root;
 
-        s->wtfac_topsoil = calc_sw_modifier(moisture_ratio_topsoil,
+        if (s->pawater_topsoil <= p->theta_wp_topsoil * p->topsoil_depth) {
+            s->wtfac_topsoil = 0;
+        }
+        else {
+       s->wtfac_topsoil = calc_sw_modifier(moisture_ratio_topsoil,
                                             p->ctheta_topsoil,
                                             p->ntheta_topsoil);
-        s->wtfac_root = calc_sw_modifier(moisture_ratio_root, p->ctheta_root,
-                                         p->ntheta_root);
+        }
+        if (s->pawater_root <= p->theta_wp_root * p->rooting_depth) {
+            s->wtfac_root = 0;
+        }
+        else {
+
+            s->wtfac_root = calc_sw_modifier(moisture_ratio_root, p->ctheta_root,
+                p->ntheta_root);
+
+        }
 
     } else if (c->water_balance == BUCKET && c->sw_stress_model == 2) {
         /*
@@ -1360,11 +1371,14 @@ double calc_beta(double paw, double depth, double fc, double wp,
 
     theta = paw / depth;
     beta = pow(theta / (fc - wp), exponent);
-    if (beta > fc) {
+    /*
+        if (beta > fc) {
         beta = 1.0;
     } else if (beta <= wp) {
         beta = 0.0;
     }
+    */
+
 
     return (beta);
 }
