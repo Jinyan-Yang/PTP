@@ -444,9 +444,19 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
             if (! c->sub_daily) {
                 unpack_met_data(c, f, ma, m, dummy, s->day_length[doy]);
             }
-
+            //grazing should really be done here
             calculate_litterfall(c, f, fs, p, s, doy, &fdecay, &rdecay);
+// do grazing/harvest in a cheating way
+            if (c->grazing && year > 2006 && doy == 274) {
 
+                f->ceaten = 0.8 * s->shoot;
+                f->neaten = 0.8 * s->shootn;
+            }
+            else {
+                f->ceaten = 0;
+                f->neaten = 0;
+            }
+            // growth and all
             calc_day_growth(cw, c, f, fs, ma, m, nr, p, s, s->day_length[doy],
                             doy, fdecay, rdecay);
 

@@ -75,18 +75,18 @@ void calculate_litterfall(control *c, fluxes *f, fast_spinup *fs,
     /* Animal grazing? */
 
     /* Daily... */
-    if (c->grazing == 1) {
-        daily_grazing_calc(*fdecay, p, f, s);
-
-    /* annually */
-    } else if (c->grazing == 2 && p->disturbance_doy == doy) {
-        annual_grazing_calc(p, f, s);
-
-    /* no grazing */
-    } else {
-        f->ceaten = 0.0;
-        f->neaten = 0.0;
-    }
+//    if (c->grazing == 1) {
+//        daily_grazing_calc(*fdecay, p, f, s);
+//
+//    /* annually */
+//    } else if (c->grazing == 2 && p->disturbance_doy == doy) {
+//        annual_grazing_calc(p, f, s);
+//
+//    /* no grazing */
+//    } else {
+//        f->ceaten = 0.0;
+//        f->neaten = 0.0;
+//    }
     return;
 
 }

@@ -461,7 +461,7 @@ void carbon_allocation(control* c, fluxes* f, params* p, state* s,
 	f->cproot = s->nsc * f->alroot;
 
 	s->nsc += -(f->cpleaf + f->cproot);
-	//s->nsc *= 0.99;// assuming that 1% will lost via respiration
+	s->nsc *= 0.99;// assuming that 1% will lost via respiration
 
 	//double days_left;
 	//if (c->deciduous_model) {
@@ -543,7 +543,7 @@ void update_plant_state(control* c, fluxes* f, params* p, state* s,
 
 	*/
 
-	double age_effect, ncmaxf, ncmaxr, extras, extrar;
+	double age_effect, ncmaxf, ncmaxr, extras, extrar,f_decay_actual;
 
 	/*
 	** Carbon pools
@@ -571,8 +571,14 @@ void update_plant_state(control* c, fluxes* f, params* p, state* s,
             soil_water_impact = pow(soil_water_deficit, p->q_s);
         }
         */
+
+    f_decay_actual = p->fdecay* pow((1 - s->wtfac_topsoil), p->q_s);
+
+    if (f_decay_actual < 0.01) {
+        f_decay_actual = 0.01; 
+    }
     
-    f->deadleaves = p->fdecay * s->shoot * pow((1 - s->wtfac_topsoil), p->q_s);
+    f->deadleaves = f_decay_actual * s->shoot;
 
     s->shoot += f->cpleaf - f->deadleaves - f->ceaten;
 
