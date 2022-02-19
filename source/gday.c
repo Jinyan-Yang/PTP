@@ -246,11 +246,11 @@ int main(int argc, char **argv)
 void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
              met_arrays *ma, met *m, params *p, state *s, nrutil *nr) {
 
-    int    nyr, doy, window_size, i, dummy = 0;
+    int    nyr, doy, window_size, i, dummy = 0, year;
     int    fire_found = FALSE;;
     int    num_disturbance_yrs = 0;
 
-    double fdecay, rdecay, current_limitation, nitfac, year;
+    double fdecay, rdecay, current_limitation, nitfac;
     int   *disturbance_yrs = NULL;
 
     if (c->deciduous_model) {
@@ -446,16 +446,10 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
             }
             //grazing should really be done here
             calculate_litterfall(c, f, fs, p, s, doy, &fdecay, &rdecay);
-// do grazing/harvest in a cheating way
-            if (c->grazing && year > 2006 && doy == 274) {
 
-                f->ceaten = 0.8 * s->shoot;
-                f->neaten = 0.8 * s->shootn;
-            }
-            else {
-                f->ceaten = 0;
-                f->neaten = 0;
-            }
+            // do grazing/harvest in a cheating way
+            calculate_harvest(f, p, s, doy, year);
+
             // growth and all
             calc_day_growth(cw, c, f, fs, ma, m, nr, p, s, s->day_length[doy],
                             doy, fdecay, rdecay);

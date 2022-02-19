@@ -383,11 +383,13 @@ typedef struct {
     int     wetting;         /* number of wetting layers */
 
 
-	//traits
+	//traits // jim added in 2021 to account for harest and swc
 	double green_sw_frac; //fraction of sw that leaf and root growth start
 	int days_rain; // number of days rainfall stimulates growth
     double q; //power of the beta function for growth
     double q_s; //power of the beta function for decay
+    char doy_harvest[3]; //doy
+    char year_harvest[4]; //year of harvest
     int use_cover; // 1-growth depend on cover; 0-growth is independent of existing cover
 } params;
 

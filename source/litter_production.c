@@ -90,7 +90,40 @@ void calculate_litterfall(control *c, fluxes *f, fast_spinup *fs,
     return;
 
 }
+void calculate_harvest(fluxes* f, params* p, state* s, int doy, int year) {
+    // do grazing/harvest in a cheating way
+    const char* tmp_year = p->year_harvest;
+    const char* tmp_doy = p->doy_harvest;
+    char resultYear[4];
+    char resultDOY[3];
+    // assign current yr and doy date as char
+    sprintf(resultYear, "%d", year);
+    sprintf(resultDOY, "%d", doy);
+    // check if current doy and yr is in the input char
+    char* ret_yr;
+    char* ret_doy;
+    ret_yr = strstr(tmp_year, resultYear);
+    ret_doy = strstr(tmp_doy, resultDOY);
+    // reduce aboveground biomass when there is an harvest
+    // currently the fraction of reduction is a arbitory
+    if (ret_yr && ret_doy) {
 
+       // f->ceaten = 0.8 * s->shoot;
+        //f->neaten = 0.8 * s->shootn;
+
+        f->ceaten = 0.0;
+        f->neaten = 0.0;
+
+        //set harect c
+        s->shoot = 0.2 * s->shoot;
+    }
+    else {
+        f->ceaten = 0;
+        f->neaten = 0;
+    }
+
+    return;
+}
 void daily_grazing_calc(double fdecay, params *p, fluxes *f, state *s) {
     /* daily grass grazing...
 

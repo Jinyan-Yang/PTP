@@ -383,13 +383,13 @@ void calc_carbon_allocation_fracs(control* c, fluxes* f, fast_spinup* fs,
  
 
     //f->alroot = gRoot * (1 - s->wtfac_topsoil);
-    f->alroot = p->c_alloc_rmax;
+    //f->alroot = p->c_alloc_rmax;
     // reduce growth when close to full cover; 
  //here I used the apar function; 
  //maybe better witha a s shape one
     plant_cover = (1 - exp(-0.5 * s->lai))*p->use_cover;
     f->alleaf = gLeaf * pow(s->wtfac_topsoil, p->q) * (1 - plant_cover);
-
+    f->alroot = 1 - f->alleaf;
     ppt_sum_prev = 0.0;
     pass_day = 0;
     /* Now adjust root & leaf allocation to maintain balance, accounting
@@ -430,11 +430,11 @@ void calc_carbon_allocation_fracs(control* c, fluxes* f, fast_spinup* fs,
 	///*printf("%f %f %f %f %f\n", f->alleaf, f->albranch + f->alstem, f->alroot,  f->alcroot, s->canht);*/
 
 	///* Total allocation should be one, if not print warning */
-	//total_alloc = f->alroot + f->alleaf + f->albranch + f->alstem + f->alcroot;
-	//if (total_alloc > 1.0 + EPSILON) {
-	//	fprintf(stderr, "Allocation fracs > 1: %.13f\n", total_alloc);
-	//	exit(EXIT_FAILURE);
-	//}
+	total_alloc = f->alroot + f->alleaf + f->albranch + f->alstem + f->alcroot;
+	if (total_alloc > 1.0 + EPSILON) {
+		fprintf(stderr, "Allocation fracs > 1: %.13f\n", total_alloc);
+		exit(EXIT_FAILURE);
+	}
 
 	//if (c->spinup_method == SAS) {
 	//	fs->alloc[AF] += f->alleaf;

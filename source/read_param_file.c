@@ -669,7 +669,13 @@ int handler(char *section, char *name, char *value, control *c,
     } else if (MATCH("params", "q_s")) {
         p->q_s = atof(value);
     }else if (MATCH("params", "use_cover")) {
-    p->use_cover = atof(value);
+        p->use_cover = atof(value);
+    }else if (MATCH("params", "year_harvest")) {
+       // p->year_harvest = atof(value);
+        strcpy(p->year_harvest, value); 
+    }else if (MATCH("params", "doy_harvest")) {
+        strcpy(p->doy_harvest, value);
+        //p->doy_harvest = atof(value);
     } else if (MATCH("params", "fdecaydry")) {
         p->fdecaydry = atof(value);
     } else if (MATCH("params", "fhw")) {

@@ -112,8 +112,10 @@ void initialise_params(params *p) {
     p->faecescn = 25.0;
     p->faecesn = 0.0;
     p->fdecay = 0.59988;
-    p->q = 0.59988;
-    p->q_s = 0.59988;
+    p->q = 0.59988; //sensitivity of growth to swc
+    p->q_s = 0.59988;//sensitivity of senescence to swc
+    strcpy(p->doy_harvest, "999");//doy of harvest
+    strcpy(p->year_harvest, "9999"); //doy of harvest
     p->use_cover = 1;
     p->fdecaydry = 0.59988;
     p->fhw = 0.8;
