@@ -90,7 +90,8 @@ void calculate_litterfall(control *c, fluxes *f, fast_spinup *fs,
     return;
 
 }
-void calculate_harvest(fluxes* f, params* p, state* s, int doy, int year) {
+void calculate_harvest(fluxes *f, params *p, state *s, int doy, int year) {
+    /*
     // do grazing/harvest in a cheating way
     const char* tmp_year = p->year_harvest;
     const char* tmp_doy = p->doy_harvest;
@@ -99,6 +100,7 @@ void calculate_harvest(fluxes* f, params* p, state* s, int doy, int year) {
     // assign current yr and doy date as char
     sprintf(resultYear, "%d", year);
     sprintf(resultDOY, "%d", doy);
+
     // check if current doy and yr is in the input char
     char* ret_yr;
     char* ret_doy;
@@ -121,8 +123,47 @@ void calculate_harvest(fluxes* f, params* p, state* s, int doy, int year) {
         f->ceaten = 0;
         f->neaten = 0;
     }
+    */
 
-    return;
+    // do grazing/harvest in a cheating way
+    char tmp_year[255];
+    strcpy(tmp_year, p->year_harvest);
+  //  char tmp_doy[255];
+   // strcpy(tmp_doy, p->doy_harvest);
+
+    char resultYear[9];
+    char resultDOY[4];
+    // assign current yr and doy date as char
+    sprintf(resultYear, "%d", year);
+    sprintf(resultDOY, "%d", doy);
+
+    strcat(resultYear, resultDOY);
+    strcat(resultYear, ",");
+    // check if current doy and yr is in the input char
+    char *ret_yr;
+
+    ret_yr = strstr(tmp_year, resultYear);
+   // ret_doy = strstr(tmp_doy, resultDOY);
+    // reduce aboveground biomass when there is an harvest
+    // currently the fraction of reduction is a arbitory
+    if (ret_yr) {
+
+        // f->ceaten = 0.8 * s->shoot;
+         //f->neaten = 0.8 * s->shootn;
+
+        f->ceaten = 0.0;
+        f->neaten = 0.0;
+
+        //set harect c
+        s->shoot = 0.2 * s->shoot;
+    }
+    else {
+        f->ceaten = 0;
+        f->neaten = 0;
+    }
+
+
+    return(0);
 }
 void daily_grazing_calc(double fdecay, params *p, fluxes *f, state *s) {
     /* daily grass grazing...

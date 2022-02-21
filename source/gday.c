@@ -450,6 +450,7 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
             // do grazing/harvest in a cheating way
             calculate_harvest(f, p, s, doy, year);
 
+
             // growth and all
             calc_day_growth(cw, c, f, fs, ma, m, nr, p, s, s->day_length[doy],
                             doy, fdecay, rdecay);
@@ -457,6 +458,22 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
             //printf("%d %f %f\n", doy, f->gpp*100, s->lai);
             calculate_csoil_flows(c, f, fs, p, s, m->tsoil, doy);
             calculate_nsoil_flows(c, f, p, s, doy);
+
+            // here we wan evergreen grassland to be able to regrowth after complete foliage dieback
+            // we have a storage pool for decusuious so probably don't need to do anything for them
+            //Jim added 2022
+            if (c->deciduous_model) {
+                //nothing to do
+            }
+            else {
+                //assume some minimum shoot biomass and under good water condition
+                if (s->shoot < 0.001 && s->pawater_topsoil > 0.5) {
+                    //this assumes 10% of root biomass woul dgo to leaf growth 
+                    //following Grazplan
+                    s->shoot = 0.1 * s->root; 
+                    s->root = 0.9* s->root;
+                }
+            }
 
             /* update stress SMA */
             if (c->deciduous_model && s->leaf_out_days[doy] > 0.0) {

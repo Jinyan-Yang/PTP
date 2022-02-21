@@ -672,7 +672,7 @@ int handler(char *section, char *name, char *value, control *c,
         p->use_cover = atof(value);
     }else if (MATCH("params", "year_harvest")) {
        // p->year_harvest = atof(value);
-        strcpy(p->year_harvest, value); 
+        strcpy(p->year_harvest, value);
     }else if (MATCH("params", "doy_harvest")) {
         strcpy(p->doy_harvest, value);
         //p->doy_harvest = atof(value);

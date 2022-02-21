@@ -1239,9 +1239,9 @@ void precision_control(fluxes *f, state *s) {
     if (s->stem < tolerance) {
         f->deadstems += s->stem;
         f->deadstemn += s->stemn;
-        s->stem = 0.001;
-        s->stemn = 0.00004;
-        s->stemnimm = 0.00004;
+        s->stem = 0.00;
+        s->stemn = 0.0000;
+        s->stemnimm = 0.0000;
         s->stemnmob = 0.0;
     }
 
@@ -1254,7 +1254,7 @@ void precision_control(fluxes *f, state *s) {
 
     if (s->stemnimm < tolerance) {
         f->deadstemn += s->stemnimm;
-        s->stemnimm = 0.00004;
+        s->stemnimm = 0.0000;
     }
 
     return;

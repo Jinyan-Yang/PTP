@@ -388,8 +388,8 @@ typedef struct {
 	int days_rain; // number of days rainfall stimulates growth
     double q; //power of the beta function for growth
     double q_s; //power of the beta function for decay
-    char doy_harvest[3]; //doy
-    char year_harvest[4]; //year of harvest
+    char doy_harvest[255]; //doy
+    char year_harvest[255]; //year of harvest
     int use_cover; // 1-growth depend on cover; 0-growth is independent of existing cover
 } params;
 
