@@ -1222,8 +1222,10 @@ void calculate_vcmax_parameter(params *p, state *s, double Tk, double N0,
     double Hd = 144568.0;
     double delS = 472.0;
 
+ 
     /* the maximum rate of electron transport at 25 degC */
-    *vcmax25 = p->vcmaxna * N0 + p->vcmaxnb;
+    //*vcmax25 = p->vcmaxna * N0 + p->vcmaxnb;
+    *vcmax25 = p->vcmax;
     *vcmax = peaked_arrh(mt, *(vcmax25), Ea, Tk, delS, Hd);
 
     /* reduce photosynthetic capacity with moisture stress */
