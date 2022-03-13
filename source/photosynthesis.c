@@ -621,6 +621,7 @@ void mate_C3_photosynthesis(control *c, fluxes *f, met *m, params *p, state *s,
     /* light-saturated photosynthesis rate at the top of the canopy (gross) */
     asat_am = MIN(aj_am, ac_am);
     asat_pm = MIN(aj_pm, ac_pm);
+    f->a_max = MAX(asat_am, asat_pm);
 
     /* Covert PAR units (umol PAR MJ-1) */
     conv = MJ_TO_J * J_2_UMOL;
@@ -1149,6 +1150,7 @@ void mate_C4_photosynthesis(control *c, fluxes *f, met *m, params *p, state *s,
                     (M_am * kslope * ci_am));
     A_pm = quadratic(beta2, -(M_pm + kslope * ci_pm),
                     (M_pm * kslope * ci_pm));
+    f->a_max = MAX(A_am, A_pm);
 
     /* These respiration terms are just for assimilation calculations,
        autotrophic respiration is stil assumed to be half of GPP */
@@ -1225,7 +1227,7 @@ void calculate_vcmax_parameter(params *p, state *s, double Tk, double N0,
  
     /* the maximum rate of electron transport at 25 degC */
     //*vcmax25 = p->vcmaxna * N0 + p->vcmaxnb;
-    *vcmax25 = p->vcmax;
+    *vcmax25 = p->vcmax;//Jim added 22 feb 2022 to use nvc max from data
     *vcmax = peaked_arrh(mt, *(vcmax25), Ea, Tk, delS, Hd);
 
     /* reduce photosynthetic capacity with moisture stress */

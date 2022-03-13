@@ -572,10 +572,10 @@ void update_plant_state(control* c, fluxes* f, params* p, state* s,
         }
         */
 
-    f_decay_actual = p->fdecay* pow((1 - s->wtfac_topsoil), p->q_s);
+    f_decay_actual = p->fdecay * pow((1.0 - s->wtfac_root), p->q_s) * (1.0 - exp(-0.5 * s->lai));
 
-    if (f_decay_actual < 0.01) {
-        f_decay_actual = 0.01; 
+    if (f_decay_actual < 0.002) {
+        f_decay_actual = 0.002; 
     }
     
     f->deadleaves = f_decay_actual * s->shoot;

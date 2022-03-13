@@ -1370,14 +1370,17 @@ double calc_beta(double paw, double depth, double fc, double wp,
     double beta, theta;
 
     theta = paw / depth;
-    beta = pow(theta / (fc - wp), exponent);
-    /*
-        if (beta > fc) {
+   
+    
+        if (theta >= fc) {
         beta = 1.0;
-    } else if (beta <= wp) {
+    } else if (theta <= wp) {
         beta = 0.0;
     }
-    */
+    else {
+            beta = pow((theta - wp) / (fc - wp), exponent);
+    }
+    
 
 
     return (beta);

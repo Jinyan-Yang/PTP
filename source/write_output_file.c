@@ -63,7 +63,7 @@ void write_output_header(control *c, FILE **fp) {
     */
 
     /* water*/
-    fprintf(*fp, "wtfac_root,wtfac_topsoil,pawater_root,");
+    fprintf(*fp, "wtfac_root,wtfac_topsoil,pawater_root,pawater_topsoil,");
 
     /* plant */
     fprintf(*fp, "nsc,shoot,lai,branch,stem,root,croot,shootn,branchn,stemn,");
@@ -87,7 +87,7 @@ void write_output_header(control *c, FILE **fp) {
     fprintf(*fp, "deadleafn,deadbranchn,deadstemn,deadrootn,deadcrootn,");
 
     /* C fluxes */
-    fprintf(*fp, "nep,gpp,npp,hetero_resp,auto_resp,apar,");
+    fprintf(*fp, "nep,gpp,a_max,npp,hetero_resp,auto_resp,apar,");
 
     /* C & N growth */
     fprintf(*fp, "cpleaf,cpbranch,cpstem,cproot,cpcroot,");
@@ -191,8 +191,8 @@ void write_daily_outputs_ascii(control *c, canopy_wk *cw, fluxes *f, state *s,
     */
 
     /* water*/
-    fprintf(c->ofp, "%.10f,%.10f,%.10f,",
-            s->wtfac_root,s->wtfac_topsoil,s->pawater_root);
+    fprintf(c->ofp, "%.10f,%.10f,%.10f,%.10f,",
+            s->wtfac_root,s->wtfac_topsoil,s->pawater_root, s->pawater_topsoil);
 
     /* plant */
     fprintf(c->ofp, "%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,",
@@ -228,8 +228,8 @@ void write_daily_outputs_ascii(control *c, canopy_wk *cw, fluxes *f, state *s,
                     f->deadcrootn);
 
     /* C fluxes */
-    fprintf(c->ofp, "%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,",
-                    f->nep,f->gpp,f->npp,f->hetero_resp,f->auto_resp,
+    fprintf(c->ofp, "%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,",
+                    f->nep,f->gpp,f->a_max,f->npp,f->hetero_resp,f->auto_resp,
                     f->apar);
 
     /* C & N growth */

@@ -482,6 +482,7 @@ typedef struct {
     double gpp_am;
     double gpp_pm;
     double gpp;
+    double a_max;
     double npp;
     double nep;
     double auto_resp;

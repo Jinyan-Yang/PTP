@@ -296,7 +296,7 @@ void zero_carbon_day_fluxes(fluxes *f) {
     f->npp = 0.0;
     f->auto_resp = 0.0;
     f->apar = 0.0;
-
+    f->a_max = 0.0;
     return;
 }
 

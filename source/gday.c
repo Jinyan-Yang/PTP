@@ -462,18 +462,20 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
             // here we wan evergreen grassland to be able to regrowth after complete foliage dieback
             // we have a storage pool for decusuious so probably don't need to do anything for them
             //Jim added 2022
+            
             if (c->deciduous_model) {
                 //nothing to do
             }
             else {
                 //assume some minimum shoot biomass and under good water condition
-                if (s->shoot < 0.001 && s->pawater_topsoil > 0.5) {
-                    //this assumes 10% of root biomass woul dgo to leaf growth 
+                if (s->shoot < 0.001 && s->pawater_topsoil > 0.8) {
+                    //this assumes 10% of root biomass would go to leaf growth 
                     //following Grazplan
-                    s->shoot = 0.1 * s->root; 
-                    s->root = 0.9* s->root;
+                    s->shoot = min(0.1 * s->root * s->pawater_topsoil,0.05);// 0.05 is based on 5 g m-2 d-1 estimated from the empirical model fitting
+                    s->root = s->root - s->shoot;
                 }
             }
+            
 
             /* update stress SMA */
             if (c->deciduous_model && s->leaf_out_days[doy] > 0.0) {
