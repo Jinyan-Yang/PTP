@@ -89,35 +89,35 @@ void calc_day_growth(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
     calculate_ncwood_ratios(c, p, s, nitfac, &ncbnew, &nccnew, &ncwimm,
                             &ncwnew);
 
-    //recalc_wb = nitrogen_allocation(c, f, p, s, ncbnew, nccnew, ncwimm, ncwnew,
-    //                                fdecay, rdecay, doy);
+    recalc_wb = nitrogen_allocation(c, f, p, s, ncbnew, nccnew, ncwimm, ncwnew,
+                                    fdecay, rdecay, doy);
 
     //if (c->exudation && c->alloc_model != GRASSES) {
     //    calc_root_exudation(c, f, p, s);
     //}
 
-    ///* If we didn't have enough N available to satisfy wood demand, NPP
-    //   is down-regulated and thus so is GPP. We also need to recalculate the
-    //   water balance given the lower GPP. */
-    //if (recalc_wb) {
-    //    s->pawater_topsoil = previous_topsoil_store;
-    //    s->pawater_root = previous_rootzone_store;
+    /* If we didn't have enough N available to satisfy wood demand, NPP
+       is down-regulated and thus so is GPP. We also need to recalculate the
+       water balance given the lower GPP. */
+    if (recalc_wb) {
+        s->pawater_topsoil = previous_topsoil_store;
+        s->pawater_root = previous_rootzone_store;
 
-    //    if (c->sub_daily) {
-    //        /* reduce transpiration to match cut back GPP
-    //            -there isn't an obvious way to make this work at the 30 min
-    //             timestep, so invert T from WUE assumption and use that
-    //             to recalculate the end day water balance
-    //        */
-    //        f->transpiration = f->gpp_gCm2 / f->wue;
-    //        update_water_storage_recalwb(c, f, p, s, m);
+        if (c->sub_daily) {
+            /* reduce transpiration to match cut back GPP
+                -there isn't an obvious way to make this work at the 30 min
+                 timestep, so invert T from WUE assumption and use that
+                 to recalculate the end day water balance
+            */
+            f->transpiration = f->gpp_gCm2 / f->wue;
+            update_water_storage_recalwb(c, f, p, s, m);
 
-    //    } else {
-    //        calculate_water_balance(c, f, m, p, s, day_length, dummy, dummy,
-    //                                dummy);
-    //    }
+        } else {
+            calculate_water_balance(c, f, m, p, s, day_length, dummy, dummy,
+                                    dummy);
+        }
 
-    //}
+    }
     update_plant_state(c, f, p, s, fdecay, rdecay, doy);
 
     precision_control(f, s);

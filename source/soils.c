@@ -19,8 +19,8 @@
 * =========================================================================== */
 #include "soils.h"
 
-void calculate_csoil_flows(control *c, fluxes *f, fast_spinup *fs, params *p,
-                           state *s, double tsoil, int doy) {
+void calculate_csoil_flows(control* c, fluxes* f, fast_spinup* fs, params* p,
+    state* s, double tsoil, int doy) {
     double lnleaf, lnroot;
     /* Fraction of C lost due to microbial respiration */
     double frac_microb_resp = 0.85 - (0.68 * p->finesoil);
@@ -28,7 +28,7 @@ void calculate_csoil_flows(control *c, fluxes *f, fast_spinup *fs, params *p,
     /* need to store grazing flag. Allows us to switch on the annual
        grazing event, but turn it off for every other day of the year.  */
     int cntrl_grazing = c->grazing;
-    if (c->grazing == 2 && p->disturbance_doy == doy+1) {
+    if (c->grazing == 2 && p->disturbance_doy == doy + 1) {
         c->grazing = TRUE;
     }
 
@@ -88,7 +88,7 @@ void calculate_csoil_flows(control *c, fluxes *f, fast_spinup *fs, params *p,
     return;
 }
 
-void calc_root_exudation_uptake_of_C(fluxes *f, params *p, state *s) {
+void calc_root_exudation_uptake_of_C(fluxes* f, params* p, state* s) {
     /* The amount of C which enters the active pool varies according to the
     CUE of SOM in response to root exudation (REXCUE). REXCUE determines
     the fraction of REXC that enters the active pool as C. The remaining
@@ -111,11 +111,13 @@ void calc_root_exudation_uptake_of_C(fluxes *f, params *p, state *s) {
 
         if (float_eq(f->root_exc, 0.0)) {
             rex_NC = 0.0;
-        } else {
+        }
+        else {
             rex_NC = f->root_exn / f->root_exc;
         }
         f->rexc_cue = MAX(0.3, MIN(0.6, rex_NC * active_CN));
-    } else {
+    }
+    else {
         f->rexc_cue = p->root_exu_CUE;
     }
 
@@ -135,8 +137,8 @@ void calc_root_exudation_uptake_of_C(fluxes *f, params *p, state *s) {
 }
 
 
-void calculate_decay_rates(control *c, fluxes *f, fast_spinup *fs, params *p,
-                           state *s) {
+void calculate_decay_rates(control* c, fluxes* f, fast_spinup* fs, params* p,
+    state* s) {
     /* Model decay rates - decomposition rates have a strong temperature
     and moisture dependency. Note same temperature is assumed for all 3
     SOM pools, found by Knorr et al (2005) to be untrue. N mineralisation
@@ -213,8 +215,9 @@ double calc_soil_temp_factor(double tsoil) {
     double tfac;
     if (tsoil > 0.0) {
         tfac = MAX(0.0, 0.0326 + 0.00351 * pow(tsoil, 1.652) - \
-                        pow((tsoil / 41.748), 7.19));
-    } else {
+            pow((tsoil / 41.748), 7.19));
+    }
+    else {
         /* negative number cannot be raised to a fractional power
            number would need to be complex */
         tfac = 0.0;
@@ -223,12 +226,13 @@ double calc_soil_temp_factor(double tsoil) {
     return (tfac);
 }
 
-void flux_from_grazers(control *c, fluxes *f, params *p) {
+void flux_from_grazers(control* c, fluxes* f, params* p) {
     /*  Input from faeces */
     if (c->grazing) {
         p->fmfaeces = metafract(p->ligfaeces * p->faecescn / p->cfracts);
         f->faecesc = f->ceaten * p->fracfaeces;
-    } else {
+    }
+    else {
         p->fmfaeces = 0.0;
         f->faecesc = 0.0;
     }
@@ -236,7 +240,7 @@ void flux_from_grazers(control *c, fluxes *f, params *p) {
     return;
 }
 
-double calc_ligin_nratio_leaves(control *c, fluxes *f, params *p) {
+double calc_ligin_nratio_leaves(control* c, fluxes* f, params* p) {
     /* Estimate Lignin/N ratio, as this dictates the how plant litter is
     seperated between metabolic and structural pools.
 
@@ -253,7 +257,8 @@ double calc_ligin_nratio_leaves(control *c, fluxes *f, params *p) {
     if (float_eq(nc_leaf_litter, 0.0)) {
         /* catch divide by zero if we have no leaves */
         lnleaf = 0.0;
-    } else {
+    }
+    else {
         lnleaf = p->ligshoot / p->cfracts / nc_leaf_litter;
     }
 
@@ -261,7 +266,7 @@ double calc_ligin_nratio_leaves(control *c, fluxes *f, params *p) {
 
 }
 
-double calc_ligin_nratio_fine_roots(control *c, fluxes *f, params *p) {
+double calc_ligin_nratio_fine_roots(control* c, fluxes* f, params* p) {
     /* Estimate Lignin/N ratio, as this dictates the how plant litter is
     seperated between metabolic and structural pools.
 
@@ -278,14 +283,15 @@ double calc_ligin_nratio_fine_roots(control *c, fluxes *f, params *p) {
     if (float_eq(nc_root_litter, 0.0)) {
         /* catch divide by zero if we have no roots */
         lnroot = 0.0;
-    } else {
+    }
+    else {
         lnroot = p->ligroot / p->cfracts / nc_root_litter;
     }
 
     return (lnroot);
 }
 
-double ratio_of_litternc_to_live_leafnc(control *c, fluxes *f, params *p) {
+double ratio_of_litternc_to_live_leafnc(control* c, fluxes* f, params* p) {
     /* ratio of litter N:C to live leaf N:C
 
     Returns:
@@ -296,19 +302,21 @@ double ratio_of_litternc_to_live_leafnc(control *c, fluxes *f, params *p) {
     */
     double nc_leaf_litter;
 
-    if (c->use_eff_nc){
+    if (c->use_eff_nc) {
         nc_leaf_litter = p->liteffnc * (1.0 - p->fretrans);
-    } else {
-        if (float_eq(f->deadleaves, 0.0)){
+    }
+    else {
+        if (float_eq(f->deadleaves, 0.0)) {
             nc_leaf_litter = 0.0;
-        } else {
+        }
+        else {
             nc_leaf_litter = f->deadleafn / f->deadleaves;
         }
     }
     return (nc_leaf_litter);
 }
 
-double ratio_of_litternc_to_live_rootnc(control *c, fluxes *f, params *p) {
+double ratio_of_litternc_to_live_rootnc(control* c, fluxes* f, params* p) {
     /* ratio of litter N:C to live root N:C
 
     Returns:
@@ -319,12 +327,14 @@ double ratio_of_litternc_to_live_rootnc(control *c, fluxes *f, params *p) {
     */
     double nc_root_litter;
 
-    if (c->use_eff_nc){
-        nc_root_litter = p->liteffnc * p->ncrfac *  (1.0 - p->rretrans);
-    } else {
-        if (float_eq(f->deadroots, 0.0)){
+    if (c->use_eff_nc) {
+        nc_root_litter = p->liteffnc * p->ncrfac * (1.0 - p->rretrans);
+    }
+    else {
+        if (float_eq(f->deadroots, 0.0)) {
             nc_root_litter = 0.0;
-        } else{
+        }
+        else {
             nc_root_litter = f->deadrootn / f->deadroots;
         }
     }
@@ -352,7 +362,7 @@ double metafract(double lig2n) {
 }
 
 
-void partition_plant_litter(fluxes *f, params *p) {
+void partition_plant_litter(fluxes* f, params* p) {
     /* Partition litter from the plant (surface) and roots into metabolic
     and structural pools  */
 
@@ -361,7 +371,7 @@ void partition_plant_litter(fluxes *f, params *p) {
      * Surface (leaves, branches, stem) Litter
      */
 
-    /* ...to the structural pool*/
+     /* ...to the structural pool*/
     leaf_material = f->deadleaves * (1.0 - p->fmleaf);
     wood_material = f->deadbranch + f->deadstems;
     faeces_material = f->faecesc * (1.0 - p->fmfaeces);
@@ -383,7 +393,7 @@ void partition_plant_litter(fluxes *f, params *p) {
     return;
 }
 
-void cfluxes_from_structural_pool(fluxes *f, params *p, state *s) {
+void cfluxes_from_structural_pool(fluxes* f, params* p, state* s) {
 
     /* Send structural c fluxes to other SOM pools */
 
@@ -406,16 +416,16 @@ void cfluxes_from_structural_pool(fluxes *f, params *p, state *s) {
 
     /* CO2 lost during transfer of structural C to the slow pool */
     f->co2_to_air[0] = (structout_surf *
-                        (p->ligshoot * 0.3 + (1.0 - p->ligshoot) * 0.45));
+        (p->ligshoot * 0.3 + (1.0 - p->ligshoot) * 0.45));
 
     /* CO2 lost during transfer structural C  to the active pool */
     f->co2_to_air[1] = (structout_soil *
-                        (p->ligroot * 0.3 + (1.0 - p->ligroot) * 0.55));
+        (p->ligroot * 0.3 + (1.0 - p->ligroot) * 0.55));
 
     return;
 }
 
-void cfluxes_from_metabolic_pool(fluxes *f, params *p, state *s) {
+void cfluxes_from_metabolic_pool(fluxes* f, params* p, state* s) {
     /* Send C from metabolic pools to other SOM pools */
 
     /* C flux surface metabolic pool -> active pool */
@@ -431,8 +441,8 @@ void cfluxes_from_metabolic_pool(fluxes *f, params *p, state *s) {
     return;
 }
 
-void cfluxes_from_active_pool(fluxes *f, params *p, state *s,
-                              double frac_microb_resp) {
+void cfluxes_from_active_pool(fluxes* f, params* p, state* s,
+    double frac_microb_resp) {
     /* Send C fluxes from active pool to other SOM pools */
 
     double activeout = s->activesoil * p->decayrate[4];
@@ -454,7 +464,7 @@ void cfluxes_from_active_pool(fluxes *f, params *p, state *s,
     return;
 }
 
-void cfluxes_from_slow_pool(fluxes *f, params *p, state *s) {
+void cfluxes_from_slow_pool(fluxes* f, params* p, state* s) {
     /* Send C fluxes from slow pool to other SOM pools */
 
     double slowout = s->slowsoil * p->decayrate[5];
@@ -471,7 +481,7 @@ void cfluxes_from_slow_pool(fluxes *f, params *p, state *s) {
     return;
 }
 
-void cfluxes_from_passive_pool(fluxes *f, params *p, state *s) {
+void cfluxes_from_passive_pool(fluxes* f, params* p, state* s) {
 
     /* C flux passive pool -> active pool */
     f->passive_to_active = s->passivesoil * p->decayrate[6] * 0.45;
@@ -482,64 +492,64 @@ void cfluxes_from_passive_pool(fluxes *f, params *p, state *s) {
     return;
 }
 
-void calculate_soil_respiration(control *c, fluxes *f, params *p, state *s) {
+void calculate_soil_respiration(control* c, fluxes* f, params* p, state* s) {
     /* calculate the total soil respiration (heterotrophic) flux, i.e.
     the amount of CO2 released back to the atmosphere */
 
     /* total CO2 production */
     f->hetero_resp = (f->co2_to_air[0] + f->co2_to_air[1] + f->co2_to_air[2] +
-                      f->co2_to_air[3] + f->co2_to_air[4] + f->co2_to_air[5] +
-                      f->co2_to_air[6]);
+        f->co2_to_air[3] + f->co2_to_air[4] + f->co2_to_air[5] +
+        f->co2_to_air[6]);
 
     /* insert following line so value of respiration obeys c conservation if
        assuming a fixed passive pool */
     if (c->passiveconst == TRUE) {
         f->hetero_resp = (f->hetero_resp + f->active_to_passive +
-                          f->slow_to_passive - s->passivesoil *
-                          p->decayrate[6]);
+            f->slow_to_passive - s->passivesoil *
+            p->decayrate[6]);
     }
 
     return;
 }
 
-void calculate_cpools(fluxes *f, state *s) {
+void calculate_cpools(fluxes* f, state* s) {
     /* Calculate new soil carbon pools. */
 
     /* Update pools */
     s->structsurf += (f->surf_struct_litter -
-                     (f->surf_struct_to_slow + f->surf_struct_to_active +
-                      f->co2_to_air[0]));
+        (f->surf_struct_to_slow + f->surf_struct_to_active +
+            f->co2_to_air[0]));
 
     s->structsoil += (f->soil_struct_litter -
-                     (f->soil_struct_to_slow + f->soil_struct_to_active +
-                      f->co2_to_air[1]));
+        (f->soil_struct_to_slow + f->soil_struct_to_active +
+            f->co2_to_air[1]));
 
     s->metabsurf += (f->surf_metab_litter -
-                     (f->surf_metab_to_active + f->co2_to_air[2]));
+        (f->surf_metab_to_active + f->co2_to_air[2]));
 
     s->metabsoil += (f->soil_metab_litter -
-                     (f->soil_metab_to_active + f->co2_to_air[3]));
+        (f->soil_metab_to_active + f->co2_to_air[3]));
 
     /* store the C SOM fluxes for Nitrogen calculations */
     f->c_into_active = (f->surf_struct_to_active + f->soil_struct_to_active +
-                        f->surf_metab_to_active + f->soil_metab_to_active +
-                        f->slow_to_active + f->passive_to_active);
+        f->surf_metab_to_active + f->soil_metab_to_active +
+        f->slow_to_active + f->passive_to_active);
 
     f->c_into_slow = (f->surf_struct_to_slow + f->soil_struct_to_slow +
-                      f->active_to_slow);
+        f->active_to_slow);
 
     f->c_into_passive = f->active_to_passive + f->slow_to_passive;
 
     s->activesoil += (f->c_into_active -
-                      (f->active_to_slow + f->active_to_passive +
-                       f->co2_to_air[4]));
+        (f->active_to_slow + f->active_to_passive +
+            f->co2_to_air[4]));
 
     s->slowsoil += (f->c_into_slow -
-                    (f->slow_to_active + f->slow_to_passive +
-                     f->co2_to_air[5]));
+        (f->slow_to_active + f->slow_to_passive +
+            f->co2_to_air[5]));
 
     s->passivesoil += (f->c_into_passive -
-                        (f->passive_to_active + f->co2_to_air[6]));
+        (f->passive_to_active + f->co2_to_air[6]));
 
     /*
       When nothing is being added to the metabolic pools, there is the
@@ -552,7 +562,7 @@ void calculate_cpools(fluxes *f, state *s) {
     return;
 }
 
-void precision_control_soil_c(fluxes *f, state *s) {
+void precision_control_soil_c(fluxes* f, state* s) {
     /* Detect very low values in state variables and force to zero to
     avoid rounding and overflow errors */
 
@@ -577,13 +587,13 @@ void precision_control_soil_c(fluxes *f, state *s) {
 }
 
 
-void calculate_nsoil_flows(control *c, fluxes *f, params *p, state *s,
-                           int doy) {
+void calculate_nsoil_flows(control* c, fluxes* f, params* p, state* s,
+    int doy) {
 
     /* need to store grazing flag. Allows us to switch on the annual
        grazing event, but turn it off for every other day of the year.  */
     int cntrl_grazing = c->grazing;
-    if (c->grazing == 2 && p->disturbance_doy == doy+1) {
+    if (c->grazing == 2 && p->disturbance_doy == doy + 1) {
         c->grazing = TRUE;
     }
 
@@ -608,7 +618,7 @@ void calculate_nsoil_flows(control *c, fluxes *f, params *p, state *s,
 
     /* calculate N immobilisation */
     calculate_n_immobilisation(f, p, s, &(f->nimmob), &active_nc_slope,
-                               &slow_nc_slope, &passive_nc_slope);
+        &slow_nc_slope, &passive_nc_slope);
 
     /* calculate N net mineralisation */
     calc_net_mineralisation(f);
@@ -619,14 +629,15 @@ void calculate_nsoil_flows(control *c, fluxes *f, params *p, state *s,
 
     if (c->adjust_rtslow) {
         adjust_residence_time_of_slow_pool(f, p);
-    } else {
+    }
+    else {
         /* Need to correct units of rate constant */
         f->rtslow = 1.0 / (p->kdec6 * NDAYS_IN_YR);
     }
 
     /* Update model soil N pools */
     calculate_npools(c, f, p, s, active_nc_slope, slow_nc_slope,
-                     passive_nc_slope);
+        passive_nc_slope);
 
 
 
@@ -638,7 +649,7 @@ void calculate_nsoil_flows(control *c, fluxes *f, params *p, state *s,
     return;
 }
 
-void calc_root_exudation_uptake_of_N(fluxes *f, state *s) {
+void calc_root_exudation_uptake_of_N(fluxes* f, state* s) {
     /* When N mineralisation is large enough to allow a small amount of N
     immobilisation, the amount of N which enters the active pool is
     calculated according to REXC divided by the CN of the active pool. When
@@ -654,7 +665,7 @@ void calc_root_exudation_uptake_of_N(fluxes *f, state *s) {
     double N_available, active_NC, delta_Nact, N_miss, N_to_active_pool;
 
     N_available = s->inorgn + (f->ninflow + f->nurine + f->nmineralisation -
-                               f->nloss - f->nuptake);
+        f->nloss - f->nuptake);
 
     active_NC = s->activesoiln / s->activesoil;
     delta_Nact = f->root_exc * f->rexc_cue * active_NC;
@@ -672,7 +683,8 @@ void calc_root_exudation_uptake_of_N(fluxes *f, state *s) {
         */
         f->nmineralisation -= N_miss;
         N_to_active_pool = f->root_exn + N_miss;
-    } else {
+    }
+    else {
         /*
         ** Not enough N in the soil to meet demand, so we are providing all
         ** the N we have, which means that the C:N ratio of the active pool
@@ -681,7 +693,8 @@ void calc_root_exudation_uptake_of_N(fluxes *f, state *s) {
         if (N_miss > N_available) {
             N_to_active_pool = f->root_exn + N_available;
             f->nmineralisation -= N_available;
-        } else {
+        }
+        else {
             /*
             ** Enough N to meet demand, so takes N from the mineralisation
             ** and the active pool maintains the same C:N ratio.
@@ -697,7 +710,7 @@ void calc_root_exudation_uptake_of_N(fluxes *f, state *s) {
     return;
 }
 
-void adjust_residence_time_of_slow_pool(fluxes *f, params *p) {
+void adjust_residence_time_of_slow_pool(fluxes* f, params* p) {
     /* Priming simulations the residence time of the slow pool is flexible,
     as the flux out of the active pool (factive) increases the residence
     time of the slow pool decreases.
@@ -706,14 +719,15 @@ void adjust_residence_time_of_slow_pool(fluxes *f, params *p) {
 
     /* total flux out of the factive pool */
     f->factive = (f->active_to_slow + f->active_to_passive + \
-                  f->co2_to_air[4] + f->co2_released_exud);
+        f->co2_to_air[4] + f->co2_released_exud);
 
     if (float_eq(f->factive, 0.0)) {
         /* Need to correct units of rate constant */
         rt_slow_pool = 1.0 / (p->kdec6 * NDAYS_IN_YR);
-    } else {
+    }
+    else {
         rt_slow_pool = (1.0 / p->prime_y) / \
-                        MAX(0.3, (f->factive / (f->factive + p->prime_z)));
+            MAX(0.3, (f->factive / (f->factive + p->prime_z)));
 
         /* GDAY uses decay rates rather than residence times... */
         p->kdec6 = 1.0 / rt_slow_pool;
@@ -729,7 +743,7 @@ void adjust_residence_time_of_slow_pool(fluxes *f, params *p) {
     return;
 }
 
-void grazer_inputs(control *c, fluxes *f, params *p) {
+void grazer_inputs(control* c, fluxes* f, params* p) {
     /* Grazer inputs from faeces and urine, flux detd by faeces c:n */
     double arg;
 
@@ -755,8 +769,8 @@ void grazer_inputs(control *c, fluxes *f, params *p) {
     return;
 }
 
-void inputs_from_plant_litter(fluxes *f, params *p, double *nsurf,
-                              double *nsoil) {
+void inputs_from_plant_litter(fluxes* f, params* p, double* nsurf,
+    double* nsoil) {
     /* inputs from plant litter.
 
     surface and soil pools are independent. Structural input flux n:c can
@@ -771,14 +785,14 @@ void inputs_from_plant_litter(fluxes *f, params *p, double *nsurf,
     */
 
     /* surface and soil inputs (faeces n goes to abovgrd litter pools) */
-    *nsurf = f->deadleafn + f->deadbranchn + f->deadstemn + p->faecesn;
+    * nsurf = f->deadleafn + f->deadbranchn + f->deadstemn + p->faecesn;
     *nsoil = f->deadrootn + f->deadcrootn;
 
     return;
 }
 
-void partition_plant_litter_n(control *c, fluxes *f, params *p, double nsurf,
-                              double nsoil) {
+void partition_plant_litter_n(control* c, fluxes* f, params* p, double nsurf,
+    double nsoil) {
     /* Partition litter N from the plant (surface) and roots into metabolic
     and structural pools
 
@@ -797,23 +811,24 @@ void partition_plant_litter_n(control *c, fluxes *f, params *p, double nsurf,
 
         /* structural input n:c is a fraction of metabolic */
         c_surf_struct_litter = (f->surf_struct_litter * p->structrat +
-                                f->surf_metab_litter);
+            f->surf_metab_litter);
 
         if (float_eq(c_surf_struct_litter, 0.0))
-             f->n_surf_struct_litter = 0.0;
+            f->n_surf_struct_litter = 0.0;
         else
-             f->n_surf_struct_litter = (nsurf * f->surf_struct_litter *
-                                        p->structrat / c_surf_struct_litter);
+            f->n_surf_struct_litter = (nsurf * f->surf_struct_litter *
+                p->structrat / c_surf_struct_litter);
 
         c_soil_struct_litter = (f->soil_struct_litter * p->structrat +
-                                f->soil_metab_litter);
+            f->soil_metab_litter);
 
         if (float_eq(c_soil_struct_litter, 0.0))
             f->n_soil_struct_litter = 0.0;
         else
             f->n_soil_struct_litter = (nsurf * f->soil_struct_litter *
-                                       p->structrat / c_soil_struct_litter);
-    } else {
+                p->structrat / c_soil_struct_litter);
+    }
+    else {
 
         /* n flux -> surface structural pool */
         f->n_surf_struct_litter = f->surf_struct_litter / p->structcn;
@@ -823,7 +838,7 @@ void partition_plant_litter_n(control *c, fluxes *f, params *p, double nsurf,
 
         /* if not enough N for structural, all available N goes to structural */
         if (f->n_surf_struct_litter > nsurf)
-             f->n_surf_struct_litter = nsurf;
+            f->n_surf_struct_litter = nsurf;
         if (f->n_soil_struct_litter > nsoil)
             f->n_soil_struct_litter = nsoil;
     }
@@ -836,7 +851,7 @@ void partition_plant_litter_n(control *c, fluxes *f, params *p, double nsurf,
     return;
 }
 
-void nfluxes_from_structural_pools(fluxes *f, params *p, state *s) {
+void nfluxes_from_structural_pools(fluxes* f, params* p, state* s) {
     /* from structural pool */
     double sigwt;
     double structout_surf = s->structsurfn * p->decayrate[0];
@@ -862,7 +877,7 @@ void nfluxes_from_structural_pools(fluxes *f, params *p, state *s) {
     return;
 }
 
-void nfluxes_from_metabolic_pool(fluxes *f, params *p, state *s) {
+void nfluxes_from_metabolic_pool(fluxes* f, params* p, state* s) {
 
     /* N flux surface metabolic pool -> active pool */
     f->n_surf_metab_to_active = s->metabsurfn * p->decayrate[1];
@@ -874,8 +889,8 @@ void nfluxes_from_metabolic_pool(fluxes *f, params *p, state *s) {
 }
 
 
-void nfluxes_from_active_pool(fluxes *f, params *p, state *s,
-                              double frac_microb_resp) {
+void nfluxes_from_active_pool(fluxes* f, params* p, state* s,
+    double frac_microb_resp) {
 
     double activeout, sigwt;
     /* N fluxes from active pool */
@@ -891,7 +906,7 @@ void nfluxes_from_active_pool(fluxes *f, params *p, state *s,
     return;
 }
 
-void nfluxes_from_slow_pool(fluxes *f, params *p, state *s) {
+void nfluxes_from_slow_pool(fluxes* f, params* p, state* s) {
     /* N fluxes from slow pools */
 
     double slowout = s->slowsoiln * p->decayrate[5];
@@ -906,7 +921,7 @@ void nfluxes_from_slow_pool(fluxes *f, params *p, state *s) {
     return;
 }
 
-void nfluxes_from_passive_pool(fluxes *f, params *p, state *s) {
+void nfluxes_from_passive_pool(fluxes* f, params* p, state* s) {
     /* N fluxes from passive pool */
 
     /* C flux passive pool -> active pool */
@@ -915,7 +930,7 @@ void nfluxes_from_passive_pool(fluxes *f, params *p, state *s) {
     return;
 }
 
-void calculate_n_mineralisation(fluxes *f) {
+void calculate_n_mineralisation(fluxes* f) {
     /* N gross mineralisation rate is given by the excess of N outflows
     over inflows. Nitrogen mineralisation is the process by which organic
     N is converted to plant available inorganic N, i.e. microbes decompose
@@ -927,18 +942,18 @@ void calculate_n_mineralisation(fluxes *f) {
     value : float
         Gross N mineralisation
     */
-    f->ngross =  (f->n_surf_struct_to_slow + f->n_surf_struct_to_active +
-                  f->n_soil_struct_to_slow + f->n_soil_struct_to_active +
-                  f->n_surf_metab_to_active + f->n_soil_metab_to_active +
-                  f->n_active_to_slow + f->n_active_to_passive +
-                  f->n_slow_to_active + f->n_slow_to_passive +
-                  f->n_passive_to_active);
+    f->ngross = (f->n_surf_struct_to_slow + f->n_surf_struct_to_active +
+        f->n_soil_struct_to_slow + f->n_soil_struct_to_active +
+        f->n_surf_metab_to_active + f->n_soil_metab_to_active +
+        f->n_active_to_slow + f->n_active_to_passive +
+        f->n_slow_to_active + f->n_slow_to_passive +
+        f->n_passive_to_active);
     return;
 }
 
-void calculate_n_immobilisation(fluxes *f, params *p, state *s, double *nimmob,
-                                double *active_nc_slope, double *slow_nc_slope,
-                                double *passive_nc_slope) {
+void calculate_n_immobilisation(fluxes* f, params* p, state* s, double* nimmob,
+    double* active_nc_slope, double* slow_nc_slope,
+    double* passive_nc_slope) {
     /* N immobilised in new soil organic matter, the reverse of
     mineralisation. Micro-organisms in the soil compete with plants for N.
     Immobilisation is the process by which nitrate and ammonium are taken up
@@ -1001,14 +1016,14 @@ void calculate_n_immobilisation(fluxes *f, params *p, state *s, double *nimmob,
 }
 
 
-void calc_net_mineralisation(fluxes *f) {
+void calc_net_mineralisation(fluxes* f) {
     /* N Net mineralisation from microbial activity */
     f->nmineralisation = f->ngross - f->nimmob + f->nlittrelease;
-
+    f->nmineralisation = MAX(f->nmineralisation, 0);
     return;
 }
 
-double calculate_nc_slope(params *p, double ncmax, double ncmin) {
+double calculate_nc_slope(params* p, double ncmax, double ncmin) {
     /* Returns N:C ratio of the mineral pool slope
 
     based on fig 4 of Parton et al 1993. Standard slow pool C:N is different
@@ -1036,9 +1051,9 @@ double calculate_nc_slope(params *p, double ncmax, double ncmin) {
     return (arg1 / arg2 * conv);
 }
 
-void calculate_npools(control *c, fluxes *f, params *p, state *s,
-                      double active_nc_slope, double slow_nc_slope,
-                      double passive_nc_slope) {
+void calculate_npools(control* c, fluxes* f, params* p, state* s,
+    double active_nc_slope, double slow_nc_slope,
+    double passive_nc_slope) {
     /*
     Update N pools in the soil
 
@@ -1053,8 +1068,8 @@ void calculate_npools(control *c, fluxes *f, params *p, state *s,
 
     */
     double n_into_active, n_out_of_active, n_into_slow, n_out_of_slow,
-           n_into_passive, n_out_of_passive, arg, active_nc, fixn, slow_nc,
-           pass_nc;
+        n_into_passive, n_out_of_passive, arg, active_nc, fixn, slow_nc,
+        pass_nc;
 
     /*
         net N release implied by separation of litter into structural
@@ -1067,24 +1082,24 @@ void calculate_npools(control *c, fluxes *f, params *p, state *s,
     f->nlittrelease = 0.0;
 
     s->structsurfn += (f->n_surf_struct_litter -
-                        (f->n_surf_struct_to_slow +
-                         f->n_surf_struct_to_active));
+        (f->n_surf_struct_to_slow +
+            f->n_surf_struct_to_active));
 
     s->structsoiln += (f->n_soil_struct_litter -
-                       (f->n_soil_struct_to_slow + f->n_soil_struct_to_active));
+        (f->n_soil_struct_to_slow + f->n_soil_struct_to_active));
 
     if (c->strfloat == FALSE) {
         s->structsurfn += nc_limit(f, s->structsurf, s->structsurfn,
-                                   1.0/p->structcn, 1.0/p->structcn);
+            1.0 / p->structcn, 1.0 / p->structcn);
         s->structsoiln += nc_limit(f, s->structsoil, s->structsoiln,
-                                   1.0/p->structcn, 1.0/p->structcn);
+            1.0 / p->structcn, 1.0 / p->structcn);
     }
 
     s->metabsurfn += f->n_surf_metab_litter - f->n_surf_metab_to_active;
-    s->metabsurfn += nc_limit(f, s->metabsurf, s->metabsurfn,1.0/25.0, 1.0/10.0);
+    s->metabsurfn += nc_limit(f, s->metabsurf, s->metabsurfn, 1.0 / 25.0, 1.0 / 10.0);
     s->metabsoiln += (f->n_soil_metab_litter - f->n_soil_metab_to_active);
-    s->metabsoiln += nc_limit(f, s->metabsoil, s->metabsoiln, 1.0/25.0,
-                              1.0/10.0);
+    s->metabsoiln += nc_limit(f, s->metabsoil, s->metabsoiln, 1.0 / 25.0,
+        1.0 / 10.0);
 
     /* When nothing is being added to the metabolic pools, there is the
        potential scenario with the way the model works for tiny bits to be
@@ -1094,13 +1109,13 @@ void calculate_npools(control *c, fluxes *f, params *p, state *s,
 
     /* Update SOM pools */
     n_into_active = (f->n_surf_struct_to_active + f->n_soil_struct_to_active +
-                     f->n_surf_metab_to_active + f->n_soil_metab_to_active +
-                     f->n_slow_to_active + f->n_passive_to_active);
+        f->n_surf_metab_to_active + f->n_soil_metab_to_active +
+        f->n_slow_to_active + f->n_passive_to_active);
 
     n_out_of_active = f->n_active_to_slow + f->n_active_to_passive;
 
     n_into_slow = (f->n_surf_struct_to_slow + f->n_soil_struct_to_slow +
-                   f->n_active_to_slow);
+        f->n_active_to_slow);
 
     n_out_of_slow = f->n_slow_to_active + f->n_slow_to_passive;
     n_into_passive = f->n_active_to_passive + f->n_slow_to_passive;
@@ -1144,15 +1159,15 @@ void calculate_npools(control *c, fluxes *f, params *p, state *s,
        (grazer urine n goes directly into inorganic pool) nb inorgn may be
        unstable if rateuptake is large */
     s->inorgn += (f->ninflow + f->nurine + f->nmineralisation -
-                  f->nloss - f->nuptake);
+        f->nloss - f->nuptake);
 
     /*f->nmineralisation = f->ngross - f->nimmob + f->nlittrelease;*/
     return;
 }
 
 
-double nc_limit(fluxes *f, double cpool, double npool, double ncmin,
-                double ncmax) {
+double nc_limit(fluxes* f, double cpool, double npool, double ncmin,
+    double ncmax) {
     /* Release N to 'Inorgn' pool or fix N from 'Inorgn', in order to keep
     the  N:C ratio of a litter pool within the range 'ncmin' to 'ncmax'.
 
@@ -1182,12 +1197,14 @@ double nc_limit(fluxes *f, double cpool, double npool, double ncmin,
         rel = npool - nmax;
         f->nlittrelease += rel;
         return (-rel);
-    } else if (npool < nmin) {
+    }
+    else if (npool < nmin) {
         /* fix */
         fix = nmin - npool;
         f->nlittrelease -= fix;
         return (fix);
-    } else {
+    }
+    else {
         return (0.0);
     }
 }
@@ -1215,7 +1232,7 @@ double nc_flux(double cflux, double nflux, double nc_ratio) {
 }
 
 
-void precision_control_soil_n(fluxes *f, state *s) {
+void precision_control_soil_n(fluxes* f, state* s) {
     /* Detect very low values in state variables and force to zero to
     avoid rounding and overflow errors */
 

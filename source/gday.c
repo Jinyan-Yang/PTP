@@ -447,7 +447,7 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
             //grazing should really be done here
             calculate_litterfall(c, f, fs, p, s, doy, &fdecay, &rdecay);
 
-            // do grazing/harvest in a cheating way
+            // do grazing/harvest in a cheating way--jim feb 2022
             calculate_harvest(f, p, s, doy, year);
 
 

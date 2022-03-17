@@ -126,11 +126,10 @@ void calculate_harvest(fluxes *f, params *p, state *s, int doy, int year) {
     */
 
     // do grazing/harvest in a cheating way
+    // get the yr. doy data
     char tmp_year[255];
     strcpy(tmp_year, p->year_harvest);
-  //  char tmp_doy[255];
-   // strcpy(tmp_doy, p->doy_harvest);
-
+  
     char resultYear[9];
     char resultDOY[4];
     // assign current yr and doy date as char
@@ -143,7 +142,7 @@ void calculate_harvest(fluxes *f, params *p, state *s, int doy, int year) {
     char *ret_yr;
 
     ret_yr = strstr(tmp_year, resultYear);
-   // ret_doy = strstr(tmp_doy, resultDOY);
+
     // reduce aboveground biomass when there is an harvest
     // currently the fraction of reduction is a arbitory
     if (ret_yr) {
