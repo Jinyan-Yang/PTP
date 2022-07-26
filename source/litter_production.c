@@ -154,7 +154,8 @@ void calculate_harvest(fluxes *f, params *p, state *s, int doy, int year) {
         f->neaten = 0.0;
 
         //set harect c
-        s->shoot = 0.2 * s->shoot;
+        s->shoot = MAX(0.2 * s->shoot,0.1);
+        s->shootn = MAX(0.2 * s->shootn, 0.04);
     }
     else {
         f->ceaten = 0;

@@ -475,8 +475,9 @@ void run_sim(canopy_wk *cw, control *c, fluxes *f, fast_spinup *fs,
                     s->root = s->root - s->shoot;
                 }
             }
-            
-
+            //jim added for mingkai
+            printf("Plant C: %f\n", s->plantc);
+            printf("Soil C: %f\n", s->soilc);
             /* update stress SMA */
             if (c->deciduous_model && s->leaf_out_days[doy] > 0.0) {
                  /*

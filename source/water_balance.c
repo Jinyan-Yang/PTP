@@ -108,7 +108,7 @@ void calculate_water_balance(control *c, fluxes *f, met *m, params *p,
 
     net_rad_am = calc_net_radiation(p, m->sw_rad_am, m->tair_am);
     net_rad_pm = calc_net_radiation(p, m->sw_rad_pm, m->tair_pm);
-	printf("nerRad: %f\n", net_rad_am + net_rad_pm);
+	//printf("nerRad: %f\n", net_rad_am + net_rad_pm);
 	soil_evap = calc_soil_evaporation(m, p, s, net_rad_am + net_rad_pm);
 	soil_evap *= MOLE_WATER_2_G_WATER * G_TO_KG * (60.0 * 60.0 * daylen);
 
@@ -561,7 +561,7 @@ double calc_soil_evaporation(met *m, params *p, state *s, double net_rad) {
 
     /* reduce soil evaporation if top soil is dry */
     soil_evap *= s->wtfac_topsoil;
-	printf("eSoil: %f\n", soil_evap);
+	//printf("eSoil: %f\n", soil_evap);
     return (soil_evap);
 }
 
